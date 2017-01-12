@@ -1,0 +1,35 @@
+---
+#   Copyright Red Hat, Inc. All Rights Reserved.
+#
+#   Licensed under the Apache License, Version 2.0 (the "License"); you may
+#   not use this file except in compliance with the License. You may obtain
+#   a copy of the License at
+#
+#       http://www.apache.org/licenses/LICENSE-2.0
+#
+#   Unless required by applicable law or agreed to in writing, software
+#   distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+#   WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+#   License for the specific language governing permissions and limitations
+#   under the License.
+#
+
+- block:
+    - name: Retrieve the real trunk repository configuration
+      shell: >
+        curl -L {{ trunk_repository }} |awk -F= '/baseurl/ {print $2}'
+      register: baseurl
+
+    - name: Define hashed repository variables
+      set_fact:
+        version_hash: "{{ baseurl.stdout.split('/')[-1] }}"
+        hashed_trunk_repository: "{{ baseurl.stdout }}/delorean.repo"
+
+    - name: Configure Kolla repository parameters
+      set_fact:
+        kolla_rpm_setup_config:
+          - "{{ hashed_trunk_repository }}"
+          - "{{ trunk_deps_repository }}"
+  when:
+    - trunk_repository is defined
+    - trunk_deps_repository is defined

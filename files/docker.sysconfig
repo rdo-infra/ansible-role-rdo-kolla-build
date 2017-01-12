@@ -1,0 +1,2 @@
+# MTU tweak: https://bugs.launchpad.net/kolla-ansible/+bug/1654395
+OPTIONS="--mtu 1300 --max-concurrent-downloads=8 --max-concurrent-uploads=8 --storage-driver=btrfs"

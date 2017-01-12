@@ -1,0 +1,17 @@
+[DEFAULT]
+base              = {{ kolla_base }}
+base_image        = {{ kolla_base_image }}
+base_tag          = {{ kolla_base_tag }}
+debug             = {{ kolla_debug }}
+install_type      = {{ kolla_install_type }}
+logs_dir          = {{ kolla_logs_dir }}
+maintainer        = {{ kolla_maintainer }}
+namespace         = {{ kolla_namespace }}
+registry          = {{ kolla_registry }}
+retries           = {{ kolla_retries }}
+rpm_setup_config  = {{ kolla_rpm_setup_config |join(',') }}
+tag               = {{ kolla_tag }}
+template_only     = {{ kolla_template_only }}
+template_override = {{ kolla_template_override }}
+threads           = {{ kolla_threads }}
+timeout           = {{ kolla_timeout }}

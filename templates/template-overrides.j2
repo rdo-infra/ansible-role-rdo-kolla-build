@@ -1,0 +1,11 @@
+{% raw %}
+{% extends parent_template %}
+{% set base_centos_binary_packages_append = ['puppet'] %}
+
+{% block base_header %}
+{% endraw %}
+LABEL build_id="{{ build_id }}"
+LABEL rdo_version="{{ version_hash }}"
+{% raw %}
+{% endblock %}
+{% endraw %}
