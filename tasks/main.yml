@@ -48,6 +48,21 @@
     - build
     - push
 
+- name: Record relevant variables with ARA
+  ara_record:
+    key: "{{ item.key }}"
+    value: "{{ item.value }}"
+    type: "{{ item.type |default('text') }}"
+  with_items:
+    - { key: "kolla_version", value: "{{ kolla_version }}" }
+    - { key: "kolla_git_revision", value: "{{ kolla_git_revision }}" }
+    - { key: "version_hash", value: "{{ version_hash }}" }
+    - { key: "trunk_repository", value: "{{ trunk_repository }}", type: "url" }
+    - { key: "trunk_repository_deps", value: "{{ trunk_repository_deps }}", type: "url" }
+    - { key: "build_id", value: "{{ build_id }}" }
+    - { key: "kolla_rdo_images", value: "{{ kolla_rdo_images }}" }
+  ignore_errors: "yes"
+
 - name: Build images
   vars:
     image: "{{ item }}"

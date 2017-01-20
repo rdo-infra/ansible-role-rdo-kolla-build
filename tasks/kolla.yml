@@ -45,6 +45,12 @@
         version: "master"
         force: "yes"
 
+    - name: Retrieve Kolla version
+      command: git rev-parse HEAD
+      args:
+        chdir: "{{ kolla_tmpdir }}"
+      register: kolla_git_revision
+
     - name: Generate Kolla virtual environment with tox
       command: tox -e build-centos-binary --notest
       args:
