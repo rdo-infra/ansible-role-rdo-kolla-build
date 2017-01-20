@@ -1,7 +1,10 @@
 ---
 # Location to the "config.json" file (defaults to $HOME/.docker)
 # This file is required when pushing to Docker Hub.
-docker_config: "{{ lookup('env','HOME') }}/.docker"
+# Note: Defaulting to ansible_env as opposed to an env lookup -- env lookup
+# will fetch the variable from the local machine, we're interested in the
+# remote machine home directory.
+docker_config: "{{ ansible_env.HOME }}/.docker"
 docker_btrfs_volume: "/tmp/docker-btrfs"
 
 # Set up configuration
