@@ -55,7 +55,7 @@
     type: "{{ item.type |default('text') }}"
   with_items:
     - { key: "kolla_version", value: "{{ kolla_version }}" }
-    - { key: "kolla_git_revision", value: "{{ kolla_git_revision }}" }
+    - { key: "kolla_git_revision", value: "{{ kolla_git_revision.stdout }}" }
     - { key: "version_hash", value: "{{ version_hash }}" }
     - { key: "trunk_repository", value: "{{ trunk_repository }}", type: "url" }
     - { key: "trunk_deps_repository", value: "{{ trunk_deps_repository }}", type: "url" }
