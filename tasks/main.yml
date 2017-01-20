@@ -67,7 +67,7 @@
   vars:
     image: "{{ item }}"
   include: build.yml
-  with_items: "{{ kolla_rdo_images }}"
+  with_items: "{{ kolla_rdo_images }}"
   when: kolla_build
   tags:
     - build
