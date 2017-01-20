@@ -62,6 +62,10 @@
     - { key: "build_id", value: "{{ build_id }}" }
     - { key: "kolla_rdo_images", value: "{{ kolla_rdo_images }}" }
   ignore_errors: "yes"
+  tags:
+    - setup
+    - build
+    - push
 
 - name: Build images
   vars:
