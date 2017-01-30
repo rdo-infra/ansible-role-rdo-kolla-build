@@ -21,6 +21,8 @@
 
 - block:
     - name: Install python-setuptools and git
+      vars:
+        ansible_python_interpreter: "/usr/bin/python"
       package:
         name: "{{ item }}"
         state: "present"

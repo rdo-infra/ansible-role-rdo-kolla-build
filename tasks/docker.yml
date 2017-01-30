@@ -60,6 +60,8 @@
 
 # python-docker-py is required so we can leverage Ansible docker modules
 - name: Install docker and docker-py
+  vars:
+    ansible_python_interpreter: "/usr/bin/python"
   package:
     name: "{{ item }}"
     state: "present"
