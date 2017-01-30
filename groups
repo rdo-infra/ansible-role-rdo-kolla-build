@@ -1,3 +1,5 @@
-# UUID                                  	Group Name
-#
-5f887fde37aa903d3ffe18f6931d76187833fd67	rdo-infra/ansible-role-rdo-kolla-build-ptl
+# UUID          Group Name
+False 	Non-Interactive Users
+df26193a7ed125fc5c9511eac2ecb1808a139fac       	rdo-infra/ansible-role-rdo-kolla-build-core
+5f887fde37aa903d3ffe18f6931d76187833fd67        	rdo-infra/ansible-role-rdo-kolla-build-ptl
+global:Registered-Users		Registered Users
