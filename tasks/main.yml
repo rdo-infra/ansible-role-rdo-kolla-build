@@ -31,7 +31,6 @@
       when: not docker_stat.stat.exists
   when: kolla_push
   tags:
-    - setup
     - push
 
 - include: repositories.yml
