@@ -31,7 +31,6 @@
       when: not docker_stat.stat.exists
   when: kolla_push
   tags:
-    - setup
     - push
 
 - include: repositories.yml
@@ -85,12 +84,14 @@
           --format "{{ '{{' }}.Repository{{ '}}' }}" \
           --filter "label=build_id={{ build_id }}"
       register: built_images
+      tags:
+        - push
 
     - name: Tag images with version and push
       vars:
         image: "{{ item }}"
       include: push.yml
       with_items: "{{ built_images.stdout_lines }}"
+      tags:
+        - push
   when: kolla_push
-  tags:
-    - push
