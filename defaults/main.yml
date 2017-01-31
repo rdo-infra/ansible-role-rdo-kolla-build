@@ -41,7 +41,7 @@ kolla_timeout: 120
 # This doesn't actually configure the kolla-build to push, we're pushing
 # ourselves in order to be able to, if need be, build and push separately.
 kolla_build: true
-kolla_push: true
+kolla_push: false
 
 # Kolla doesn't know out of the box which images are supported for a given
 # operating system (ex: CentOS) and type (ex: Binary).

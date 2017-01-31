@@ -29,9 +29,8 @@
          contain Docker Hub authentication information.
          This file is generated automatically with the command "docker login".
       when: not docker_stat.stat.exists
-  when: kolla_push
+  when: kolla_push | bool
   tags:
-    - setup
     - push
 
 - include: repositories.yml
@@ -71,26 +70,31 @@
   vars:
     image: "{{ item }}"
   include: build.yml
+  static: no
   with_items: "{{ kolla_rdo_images }}"
-  when: kolla_build
+  when: kolla_build | bool
   tags:
     - build
 
-- block:
-    # This is a bit weird due to the docker images format syntax clashing with jinja
-    # https://docs.docker.com/engine/reference/commandline/images/#/formatting
-    - name: Retrieve list of built images
-      shell: >
-        docker images {{ kolla_namespace }}/centos-binary* \
-          --format "{{ '{{' }}.Repository{{ '}}' }}" \
-          --filter "label=build_id={{ build_id }}"
-      register: built_images
 
-    - name: Tag images with version and push
-      vars:
-        image: "{{ item }}"
-      include: push.yml
-      with_items: "{{ built_images.stdout_lines }}"
-  when: kolla_push
+# This is a bit weird due to the docker images format syntax clashing with jinja
+# https://docs.docker.com/engine/reference/commandline/images/#/formatting
+- name: Retrieve list of built images
+  shell: >
+    docker images {{ kolla_namespace }}/centos-binary* \
+      --format "{{ '{{' }}.Repository{{ '}}' }}" \
+      --filter "label=build_id={{ build_id }}"
+  register: built_images
+  when: kolla_push | bool
+  tags:
+    - push
+
+- name: Tag images with version and push
+  vars:
+    image: "{{ item }}"
+  include: push.yml
+  static: no
+  with_items: "{{ built_images.stdout_lines }}"
+  when: kolla_push | bool
   tags:
     - push
