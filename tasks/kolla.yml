@@ -19,49 +19,10 @@
     path: "{{ kolla_tmpdir }}"
     state: "directory"
 
-- block:
-    - name: Install python-setuptools and git
-      package:
-        name: "{{ item }}"
-        state: "present"
-      with_items:
-        - python-setuptools
-        - git
-
-    - name: Install pip
-      easy_install:
-        name: "pip"
-        state: "present"
-
-    - name: Install tox
-      pip:
-        name: "tox"
-        state: "present"
-
-    - name: Retrieve Kolla
-      git:
-        repo: "{{ kolla_repository }}"
-        dest: "{{ kolla_tmpdir }}"
-        version: "master"
-        force: "yes"
-
-    - name: Retrieve Kolla version
-      command: git rev-parse HEAD
-      args:
-        chdir: "{{ kolla_tmpdir }}"
-      register: kolla_git_revision
-
-    - name: Generate Kolla virtual environment with tox
-      command: tox -e build-centos-binary --notest
-      args:
-        chdir: "{{ kolla_tmpdir }}"
-  when: kolla_setup_method == "source"
-
-# Packaging available soon: https://bugzilla.redhat.com/show_bug.cgi?id=1390391
-- name: Detect invalid kolla_setup_method
-  fail:
-    msg: "Kolla setup method must be 'source'"
-  when: kolla_setup_method != "source"
+- name: Install kolla
+  package:
+    name: "{{ kolla_package }}"
+    state: "present"
 
 - name: Generate image build_id
   set_fact:
