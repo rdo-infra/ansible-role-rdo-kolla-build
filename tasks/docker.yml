@@ -53,42 +53,31 @@
         state: "mounted"
   when: not docker_btrfs.stat.exists
 
-- name: Set up docker repository
-  copy:
-    src: "docker.repo"
-    dest: "/etc/yum.repos.d/docker.repo"
-
 # python-docker-py is required so we can leverage Ansible docker modules
 - name: Install docker and docker-py
   package:
     name: "{{ item }}"
     state: "present"
   with_items:
-    - docker-engine
-    - docker-engine-selinux
+    - docker
     - python-docker-py
-
-- name: Create Docker systemd override directory
-  file:
-    path: "/etc/systemd/system/docker.service.d"
-    state: "directory"
-
-- name: Copy Docker systemd override configuration
-  copy:
-    src: "docker-override.conf"
-    dest: "/etc/systemd/system/docker.service.d/docker-override.conf"
-  register: override
 
 # Workaround Docker MTU issue https://bugs.launchpad.net/kolla-ansible/+bug/1654395
 - name: Override Docker defaults to include MTU parameter
   copy:
-    src: "docker.sysconfig"
-    dest: "/etc/sysconfig/docker"
-  register: defaults
+    src: "docker-network"
+    dest: "/etc/sysconfig/docker-network"
+  register: docker_network
+
+- name: Specify storage options
+  copy:
+    src: "docker-network"
+    dest: "/etc/sysconfig/docker-storage"
+  register: docker_storage
 
 - name: Reload systemctl
   command: systemctl daemon-reload
-  when: override.changed or defaults.changed
+  when: override.changed or docker_network.changed or docker_storage.changed
 
 - name: Enable and start Docker
   service:
