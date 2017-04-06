@@ -49,19 +49,39 @@
       command: git rev-parse HEAD
       args:
         chdir: "{{ kolla_tmpdir }}"
-      register: kolla_git_revision
+      register: kolla_version
 
     - name: Generate Kolla virtual environment with tox
       command: tox -e build-centos-binary --notest
       args:
         chdir: "{{ kolla_tmpdir }}"
+
+    - name: Set kolla-build location
+      set_fact:
+        kolla_build: "{{ kolla_virtualenv }}/bin/kolla-build"
+
   when: kolla_setup_method == "source"
 
-# Packaging available soon: https://bugzilla.redhat.com/show_bug.cgi?id=1390391
+- block:
+    - name: Install kolla
+      package:
+        name: "{{ kolla_package }}"
+        state: "present"
+
+    - name: Retrieve Kolla version
+      command: rpm -q openstack-kolla --qf "%{VERSION}-%{RELEASE}"
+      register: kolla_version
+
+    - name: Set kolla-build location
+      set_fact:
+        kolla_build: "kolla-build"
+
+  when: kolla_setup_method == "binary"
+
 - name: Detect invalid kolla_setup_method
   fail:
-    msg: "Kolla setup method must be 'source'"
-  when: kolla_setup_method != "source"
+    msg: "Kolla setup method must be 'source' or 'binary'"
+  when: kolla_setup_method != "source" and kolla_setup_method != "binary"
 
 - name: Generate image build_id
   set_fact:
