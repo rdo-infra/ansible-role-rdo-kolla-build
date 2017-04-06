@@ -47,44 +47,24 @@ kolla_push: false
 # operating system (ex: CentOS) and type (ex: Binary).
 # This is a curated list of containers that are known to build successfully
 # based on:
-# https://github.com/openstack/kolla/blob/fb1f7f6116c31f5c0976f497cfe75c9e3cf58c81/tests/test_build.py#L67-L84
+# - https://github.com/openstack/kolla/blob/fb1f7f6116c31f5c0976f497cfe75c9e3cf58c81/tests/test_build.py#L67-L84
+# - https://github.com/openstack/tripleo-common/blob/master/contrib/overcloud_containers.yaml
 kolla_rdo_images:
   - openstack-base
   - aodh
-  - barbican
-  - ceilometer
-  - chrony
-  - cinder
-  - collectd
-  - cron
-  - designate
   - glance
   - gnocchi
-  - haproxy
   - heat
-  - horizon
   - ironic
-  - iscsid
-  - keepalived
   - keystone
-  - magnum
-  - manila(?!-data)
   - mariadb
   - memcached
   - mistral
   - mongodb
-  - multipathd
-  - murano
-  - neutron(?!-sfc-agent)
+  - neutron(?!-sfc-agent|-bgp-dragent)
   - nova
-  - octavia
-  - openvswitch
   - panko
   - rabbitmq
-  - sahara
+  - redis
   - swift
-  - tempest
-  - tgtd
-  - trove
-  - watcher
   - zaqar
