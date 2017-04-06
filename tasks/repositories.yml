@@ -30,6 +30,13 @@
         kolla_rpm_setup_config:
           - "{{ hashed_trunk_repository }}"
           - "{{ trunk_deps_repository }}"
+
+    - name: Fetch repo file
+      get_url:
+        url: "{{ item }}"
+        dest: "/etc/yum.repos.d"
+      with_items: "{{ kolla_rpm_setup_config }}"
+
   when:
     - trunk_repository is defined
     - trunk_deps_repository is defined
