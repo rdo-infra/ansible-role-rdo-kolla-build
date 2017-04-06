@@ -25,6 +25,14 @@
         version_hash: "{{ baseurl.stdout.split('/')[-1] }}"
         hashed_trunk_repository: "{{ baseurl.stdout }}/delorean.repo"
 
+    - name: Fetch repo file
+      get_url:
+        url: "{{ hashed_trunk_repository }}"
+        dest: "/etc/yum.repos.d"
+
+    - name: upgrade all packages
+      yum: name=* state=latest
+
     - name: Configure Kolla repository parameters
       set_fact:
         kolla_rpm_setup_config:
