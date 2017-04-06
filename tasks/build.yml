@@ -16,5 +16,5 @@
 
 - name: "Build image: {{ image }}"
   command: >
-    {{ kolla_virtualenv }}/bin/kolla-build {{ image }} \
+    {{ kolla_build }} {{ image }} \
       --config-file={{ kolla_tmpdir }}/kolla-build.conf
