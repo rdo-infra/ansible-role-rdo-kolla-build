@@ -21,7 +21,7 @@
 
 - block:
     - name: Set up file for Docker btrfs device
-      command: dd if=/dev/zero of={{ docker_btrfs_volume }} bs=1M count=20480
+      command: fallocate -l 20480M {{ docker_btrfs_volume }}
 
     - name: Set up loopback device
       command: losetup -f {{ docker_btrfs_volume }}
