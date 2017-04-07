@@ -51,7 +51,7 @@
         src: "{{ btrfs_device.stdout }}"
         fstype: "btrfs"
         state: "mounted"
-  when: not docker_btrfs.stat.exists
+  when: docker_storage_driver == "btrfs" and not docker_btrfs.stat.exists
 
 # python-docker-py is required so we can leverage Ansible docker modules
 - name: Install docker and docker-py
@@ -70,10 +70,16 @@
   register: docker_network
 
 - name: Specify storage options
-  copy:
+  template:
     src: "docker-storage"
     dest: "/etc/sysconfig/docker-storage"
   register: docker_storage
+
+- name: Remove --selinux-enabled from /etc/sysconfig/docker
+  lineinfile:
+    dest: "/etc/sysconfig/docker"
+    regexp: "^OPTIONS="
+    line: "OPTIONS='--log-driver=journald --signature-verification=false'"
 
 - name: Reload systemctl
   command: systemctl daemon-reload
