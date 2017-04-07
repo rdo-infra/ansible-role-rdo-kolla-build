@@ -14,6 +14,16 @@
 #   under the License.
 #
 
+- name: Delete /var/lib/docker to allow switching storage driver
+  file:
+    path: "/var/lib/docker"
+    state: "absent"
+
+- name: Pre-create or ensure /var/lib/docker exists
+  file:
+    path: "/var/lib/docker"
+    state: "directory"
+
 - name: Check if Docker btrfs device file already exists
   stat:
     path: "{{ docker_btrfs_volume }}"
@@ -40,18 +50,13 @@
         fstype: "btrfs"
         opts: -f
 
-    - name: Pre-create or ensure /var/lib/docker exists
-      file:
-        path: "/var/lib/docker"
-        state: "directory"
-
     - name: Mount the btrfs device to /var/lib/docker
       mount:
         name: "/var/lib/docker"
         src: "{{ btrfs_device.stdout }}"
         fstype: "btrfs"
         state: "mounted"
-  when: not docker_btrfs.stat.exists
+  when: docker_storage_driver == "btrfs" and not docker_btrfs.stat.exists
 
 # python-docker-py is required so we can leverage Ansible docker modules
 - name: Install docker and docker-py
@@ -70,10 +75,16 @@
   register: docker_network
 
 - name: Specify storage options
-  copy:
+  template:
     src: "docker-storage"
     dest: "/etc/sysconfig/docker-storage"
   register: docker_storage
+
+- name: Remove --selinux-enabled from /etc/sysconfig/docker
+  lineinfile:
+    dest: "/etc/sysconfig/docker"
+    regexp: "^OPTIONS="
+    line: "OPTIONS='--log-driver=journald --signature-verification=false'"
 
 - name: Reload systemctl
   command: systemctl daemon-reload
