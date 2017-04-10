@@ -47,6 +47,10 @@
     - build
     - push
 
+- name: Collect setup data
+  command: uname -a
+  register: host_setup
+
 - name: Record relevant variables with ARA
   ara_record:
     key: "{{ item.key }}"
@@ -55,6 +59,7 @@
   with_items:
     - { key: "kolla_version", value: "{{ kolla_version }}" }
     - { key: "kolla_git_revision", value: "{{ kolla_git_revision.stdout }}" }
+    - { key: "host_setup", value: "{{ host_setup.stdout }}" }
     - { key: "version_hash", value: "{{ version_hash }}" }
     - { key: "trunk_repository", value: "{{ trunk_repository }}", type: "url" }
     - { key: "trunk_deps_repository", value: "{{ trunk_deps_repository }}", type: "url" }
