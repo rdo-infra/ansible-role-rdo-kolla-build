@@ -37,6 +37,9 @@ RUN rm /etc/my.cnf.d/mariadb-server.cnf /etc/my.cnf.d/auth_gssapi.cnf
 {% endraw %}
 LABEL build_id="{{ build_id }}"
 LABEL rdo_version="{{ version_hash }}"
+
+# https://bugzilla.redhat.com/show_bug.cgi?id=1213602
+RUN touch /var/lib/rpm/*
 {% raw %}
 {% endblock %}
 {% endraw %}
