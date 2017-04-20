@@ -93,6 +93,11 @@
     src: "kolla-build.conf.j2"
     dest: "{{ kolla_tmpdir }}/kolla-build.conf"
 
+- name: Install tripleo-common
+  package:
+    name: "tripleo-common"
+    state: "present"
+
 - name: Set up template-overrides.j2
   template:
     src: "template-overrides.j2"

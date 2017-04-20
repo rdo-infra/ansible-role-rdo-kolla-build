@@ -39,7 +39,7 @@ kolla_namespace: "rdoproject"
 kolla_retries: 3
 kolla_tag: "latest"
 kolla_template_only: "false"
-kolla_template_override: "{{ kolla_tmpdir }}/template-overrides.j2"
+kolla_template_override: "/usr/share/tripleo-common/container-images/tripleo_kolla_template_overrides.j2"
 kolla_threads: 8
 kolla_timeout: 120
 
