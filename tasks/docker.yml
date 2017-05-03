@@ -67,19 +67,26 @@
   copy:
     src: "docker-network"
     dest: "/etc/sysconfig/docker-network"
-  register: docker_network
+  notify:
+    - Reload systemctl
+    - Restart docker
 
 - name: Specify storage options
   template:
     src: "docker-storage"
     dest: "/etc/sysconfig/docker-storage"
-  register: docker_storage
+  notify:
+    - Reload systemctl
+    - Restart docker
 
 - name: Remove --selinux-enabled from /etc/sysconfig/docker
   lineinfile:
     dest: "/etc/sysconfig/docker"
     regexp: "^OPTIONS="
     line: "OPTIONS='--log-driver=journald --signature-verification=false'"
+  notify:
+    - Reload systemctl
+    - Restart docker
 
 - name: Set up insecure registry
   lineinfile:
@@ -87,10 +94,9 @@
     regexp: "^INSECURE_REGISTRY="
     line: "INSECURE_REGISTRY='--insecure-registry {{ kolla_registry }}'"
   when: kolla_insecure_registry
-
-- name: Reload systemctl
-  command: systemctl daemon-reload
-  when: docker_network.changed or docker_storage.changed
+  notify:
+    - Reload systemctl
+    - Restart docker
 
 - name: Enable and start Docker
   service:
