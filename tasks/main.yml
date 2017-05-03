@@ -55,10 +55,10 @@
   with_items:
     - { key: "kolla_version", value: "{{ kolla_version.stdout }}" }
     - { key: "version_hash", value: "{{ version_hash }}" }
-    - { key: "trunk_repository", value: "{{ trunk_repository }}", type: "url" }
+    - { key: "trunk_repository", value: "{{ hashed_trunk_repository }}", type: "url" }
     - { key: "trunk_deps_repository", value: "{{ trunk_deps_repository }}", type: "url" }
     - { key: "build_id", value: "{{ build_id }}" }
-    - { key: "kolla_rdo_images", value: "{{ kolla_rdo_images }}" }
+    - { key: "kolla_rdo_images", value: "{{ kolla_rdo_images }}", type: "list" }
   ignore_errors: "yes"
   tags:
     - setup
