@@ -36,13 +36,16 @@ kolla_install_type: "binary"
 kolla_logs_dir:
 kolla_maintainer: "RDO Project (https://rdoproject.org)"
 kolla_namespace: "rdoproject"
-kolla_registry:
 kolla_retries: 3
 kolla_tag: "latest"
 kolla_template_only: "false"
 kolla_template_override: "{{ kolla_tmpdir }}/template-overrides.j2"
 kolla_threads: 8
 kolla_timeout: 120
+
+# Use a private registry, optionally insecure
+kolla_registry:
+kolla_insecure_registry: false
 
 # This doesn't actually configure the kolla-build to push, we're pushing
 # ourselves in order to be able to, if need be, build and push separately.

@@ -81,6 +81,13 @@
     regexp: "^OPTIONS="
     line: "OPTIONS='--log-driver=journald --signature-verification=false'"
 
+- name: Set up insecure registry
+  lineinfile:
+    dest: "/etc/sysconfig/docker"
+    regexp: "^INSECURE_REGISTRY="
+    line: "INSECURE_REGISTRY='--insecure-registry {{ kolla_registry }}'"
+  when: kolla_insecure_registry
+
 - name: Reload systemctl
   command: systemctl daemon-reload
   when: docker_network.changed or docker_storage.changed

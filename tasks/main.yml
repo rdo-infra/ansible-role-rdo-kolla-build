@@ -29,7 +29,9 @@
          contain Docker Hub authentication information.
          This file is generated automatically with the command "docker login".
       when: not docker_stat.stat.exists
-  when: kolla_push | bool
+  when:
+    - kolla_push | bool
+    - not kolla_insecure_registry
   tags:
     - push
 
