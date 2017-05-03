@@ -80,8 +80,7 @@
     # https://docs.docker.com/engine/reference/commandline/images/#/formatting
     - name: Retrieve list of built images
       shell: >
-        docker images {{ kolla_namespace }}/centos-binary* \
-          --format "{{ '{{' }}.Repository{{ '}}' }}" \
+        docker images --format "{{ '{{' }}.Repository{{ '}}' }}" \
           --filter "label=build_id={{ build_id }}"
       register: built_images
       tags:
