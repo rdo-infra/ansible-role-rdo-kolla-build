@@ -13,6 +13,7 @@ docker_storage_driver: overlay
 docker_btrfs_volume: "/tmp/docker-btrfs"
 
 # Set up configuration
+# 'binary' (RDO packages) or 'source' (from git)
 kolla_setup_method: "binary"
 
 # Values for kolla_setup_method: source
@@ -28,6 +29,8 @@ trunk_repository: "https://trunk.rdoproject.org/centos7-{{ openstack_version }}/
 trunk_deps_repository: "https://trunk.rdoproject.org/centos7-{{ openstack_version }}/delorean-deps.repo"
 
 # kolla-build.conf
+# For more information, refer to Kolla documentation or:
+# git clone https://git.openstack.org/openstack/kolla; cd kolla; tox -e genconfig
 kolla_base: "centos"
 kolla_base_image:
 kolla_base_tag: "latest"
@@ -57,7 +60,7 @@ kolla_push: false
 # This is a curated list of containers that are known to build successfully
 # based on:
 # - https://github.com/openstack/kolla/blob/fb1f7f6116c31f5c0976f497cfe75c9e3cf58c81/tests/test_build.py#L67-L84
-# - https://github.com/openstack/tripleo-common/blob/master/contrib/overcloud_containers.yaml
+# - https://github.com/openstack/tripleo-common/blob/master/container-images/overcloud_containers.yaml
 kolla_rdo_images:
   - openstack-base
   - aodh
