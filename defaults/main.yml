@@ -38,8 +38,8 @@ kolla_base_tag: "latest"
 kolla_debug: "false"
 kolla_install_type: "binary"
 kolla_logs_dir:
-kolla_maintainer: "RDO Project (https://rdoproject.org)"
-kolla_namespace: "rdoproject"
+kolla_maintainer: "TripleO Project (http://tripleo.org)"
+kolla_namespace: "tripleo"
 kolla_retries: 3
 kolla_tag: "latest"
 kolla_template_only: "false"
