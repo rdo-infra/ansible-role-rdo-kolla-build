@@ -42,7 +42,7 @@
       git:
         repo: "{{ kolla_repository }}"
         dest: "{{ kolla_tmpdir }}"
-        version: "master"
+        version: "{{ kolla_git_version }}"
         force: "yes"
 
     - name: Retrieve Kolla version
