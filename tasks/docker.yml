@@ -55,12 +55,13 @@
 
 # python-docker-py is required so we can leverage Ansible docker modules
 - name: Install docker and docker-py
+  vars:
+    packages:
+      - docker
+      - python-docker-py
   package:
-    name: "{{ item }}"
+    name: "{{ packages }}"
     state: "present"
-  with_items:
-    - docker
-    - python-docker-py
 
 # Workaround Docker MTU issue https://bugs.launchpad.net/kolla-ansible/+bug/1654395
 - name: Override Docker defaults to include MTU parameter

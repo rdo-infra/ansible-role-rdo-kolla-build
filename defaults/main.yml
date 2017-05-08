@@ -21,8 +21,6 @@ kolla_repository: "https://git.openstack.org/openstack/kolla"
 kolla_tmpdir: "/tmp/kolla"
 kolla_virtualenv: "{{ kolla_tmpdir }}/.tox/build-centos-binary"
 kolla_git_version: "master"
-# Values for kolla_setup_method: binary
-kolla_package: "openstack-kolla"
 
 # RDO configuration
 openstack_release: "master"

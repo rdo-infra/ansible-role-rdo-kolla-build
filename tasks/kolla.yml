@@ -21,12 +21,13 @@
 
 - block:
     - name: Install python-setuptools and git
+      vars:
+        packages:
+          - python-setuptools
+          - git
       package:
-        name: "{{ item }}"
+        name: "{{ packages }}"
         state: "present"
-      with_items:
-        - python-setuptools
-        - git
 
     - name: Install pip
       easy_install:
@@ -63,9 +64,13 @@
   when: kolla_setup_method == "source"
 
 - block:
-    - name: Install kolla
+    - name: Install kolla and tripleo-common from packages
+      vars:
+        packages:
+          - openstack-kolla
+          - openstack-tripleo-common
       package:
-        name: "{{ kolla_package }}"
+        name: "{{ packages }}"
         state: "present"
 
     - name: Retrieve Kolla version
@@ -92,11 +97,6 @@
   template:
     src: "kolla-build.conf.j2"
     dest: "{{ kolla_tmpdir }}/kolla-build.conf"
-
-- name: Install tripleo-common
-  package:
-    name: "tripleo-common"
-    state: "present"
 
 - name: Set up template-overrides.j2
   template:
