@@ -20,13 +20,14 @@ kolla_setup_method: "binary"
 kolla_repository: "https://git.openstack.org/openstack/kolla"
 kolla_tmpdir: "/tmp/kolla"
 kolla_virtualenv: "{{ kolla_tmpdir }}/.tox/build-centos-binary"
+kolla_git_version: "master"
 # Values for kolla_setup_method: binary
 kolla_package: "openstack-kolla"
 
 # RDO configuration
-openstack_version: "master"
-trunk_repository: "https://trunk.rdoproject.org/centos7-{{ openstack_version }}/current-passed-ci/delorean.repo"
-trunk_deps_repository: "https://trunk.rdoproject.org/centos7-{{ openstack_version }}/delorean-deps.repo"
+openstack_release: "master"
+trunk_repository: "https://trunk.rdoproject.org/centos7-{{ openstack_release }}/current-passed-ci/delorean.repo"
+trunk_deps_repository: "https://trunk.rdoproject.org/centos7-{{ openstack_release }}/delorean-deps.repo"
 
 # kolla-build.conf
 # For more information, refer to Kolla documentation or:
