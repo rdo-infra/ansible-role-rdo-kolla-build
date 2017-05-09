@@ -19,7 +19,7 @@ galaxy_info:
   description: Ansible role to setup Kolla and build/push container images
   company: Red Hat
   license: Apache2
-  min_ansible_version: 2.2.0.0
+  min_ansible_version: 2.3.0.0
   platforms:
     - name: EL
       versions:
