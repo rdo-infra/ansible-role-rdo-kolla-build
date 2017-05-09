@@ -54,28 +54,8 @@ kolla_insecure_registry: false
 kolla_build: true
 kolla_push: false
 
-# Kolla doesn't know out of the box which images are supported for a given
-# operating system (ex: CentOS) and type (ex: Binary).
-# This is a curated list of containers that are known to build successfully
-# based on:
-# - https://github.com/openstack/kolla/blob/fb1f7f6116c31f5c0976f497cfe75c9e3cf58c81/tests/test_build.py#L67-L84
-# - https://github.com/openstack/tripleo-common/blob/master/container-images/overcloud_containers.yaml
+# kolla_rdo_images is used to override the default provided by tripleo-common
+# inside container-images/overcloud_containers.yaml. It is a list of patterns
+# to build containers for. For example, 'nova' would build all parent and child
+# containers related to 'nova'.
 kolla_rdo_images:
-  - openstack-base
-  - aodh
-  - glance
-  - gnocchi
-  - heat
-  - ironic
-  - keystone
-  - mariadb
-  - memcached
-  - mistral
-  - mongodb
-  - neutron(?!-sfc-agent|-bgp-dragent)
-  - nova
-  - panko
-  - rabbitmq
-  - redis
-  - swift
-  - zaqar
