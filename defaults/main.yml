@@ -1,4 +1,7 @@
 ---
+tripleo_overrides: "/usr/share/tripleo-common/container-images/tripleo_kolla_template_overrides.j2"
+tripleo_containers: "/usr/share/tripleo-common/container-images/overcloud_containers.yaml"
+
 # Location to the "config.json" file (defaults to $HOME/.docker)
 # This file is required when pushing to Docker Hub.
 # Note: Defaulting to ansible_env as opposed to an env lookup -- env lookup
@@ -41,7 +44,7 @@ kolla_namespace: "tripleo"
 kolla_retries: 3
 kolla_tag: "latest"
 kolla_template_only: "false"
-kolla_template_override: "/usr/share/tripleo-common/container-images/tripleo_kolla_template_overrides.j2"
+kolla_template_override: "{{ tripleo_overrides }}"
 kolla_threads: 8
 kolla_timeout: 120
 
@@ -54,28 +57,8 @@ kolla_insecure_registry: false
 kolla_build: true
 kolla_push: false
 
-# Kolla doesn't know out of the box which images are supported for a given
-# operating system (ex: CentOS) and type (ex: Binary).
-# This is a curated list of containers that are known to build successfully
-# based on:
-# - https://github.com/openstack/kolla/blob/fb1f7f6116c31f5c0976f497cfe75c9e3cf58c81/tests/test_build.py#L67-L84
-# - https://github.com/openstack/tripleo-common/blob/master/container-images/overcloud_containers.yaml
+# kolla_rdo_images is used to override the default provided by tripleo-common
+# inside container-images/overcloud_containers.yaml. It is a list of patterns
+# to build containers for. For example, 'nova' would build all parent and child
+# containers related to 'nova'.
 kolla_rdo_images:
-  - openstack-base
-  - aodh
-  - glance
-  - gnocchi
-  - heat
-  - ironic
-  - keystone
-  - mariadb
-  - memcached
-  - mistral
-  - mongodb
-  - neutron(?!-sfc-agent|-bgp-dragent)
-  - nova
-  - panko
-  - rabbitmq
-  - redis
-  - swift
-  - zaqar

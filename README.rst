@@ -9,9 +9,11 @@ for usage in TripleO_ with tooling provided by Kolla_.
 
 Requirements
 ============
-This Ansible role uses ARA_ to do reporting
-on the results of the role execution as well as track metadata on what the
-containers were built with.
+This role uses a ``tempfile`` task which is currently only available in Ansible
+>=2.3.0.0.
+
+This Ansible role uses ARA_ to do reporting on the results of the role
+execution as well as track metadata on what the containers were built with.
 
 To set up ARA::
 
@@ -36,8 +38,8 @@ refer to the `default variable file`_.
 
 Example usage
 =============
-Build containers related to nova
---------------------------------
+Only build containers related to nova
+-------------------------------------
 ::
 
     ---
@@ -64,6 +66,9 @@ This will, on a CentOS host in the ``build_node`` Ansible inventory group:
 
 Build and push all (default) supported containers to a private registry
 -----------------------------------------------------------------------
+.. note:: Note that the default list of container images to build is provided
+          by `tripleo-common`_.
+
 ::
 
     ---
@@ -88,3 +93,5 @@ This will, on a CentOS host in the ``build_node`` Ansible inventory group:
 - Install and configure Kolla
 - Build all default supported containers
 - Push them to the private registry 127.0.0.1:5000
+
+.. _tripleo-common: https://github.com/openstack/tripleo-common/blob/master/container-images/overcloud_containers.yaml
