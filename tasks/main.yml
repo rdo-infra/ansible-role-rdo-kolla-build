@@ -49,6 +49,48 @@
     - build
     - push
 
+# This block parses the container-images/overcloud_containers.yaml file
+# provided by tripleo-common. It is the default if kolla_rdo_images is not set.
+# It boils down to
+# - Removing the prefix: the namespace and the "centos-binary-"
+# - Removing the suffix, for example ":latest"
+- block:
+    - name: Create temporary file for parsed containers
+      tempfile:
+        state: file
+        suffix: kolla-build
+      register: parsed_containers
+
+    - name: Adjust permissions on parsed containers file
+      file:
+        path: "{{ parsed_containers.path }}"
+        mode: "0755"
+
+    - name: Load supported containers
+      slurp:
+        src: "{{ tripleo_containers }}"
+      register: supported_containers
+
+    - name: Parse supported containers
+      vars:
+       containers: "{{ supported_containers.content | b64decode | from_yaml }}"
+      template:
+        src: parsed_containers.j2
+        dest: "{{ parsed_containers.path }}"
+
+    - name: Load parsed containers
+      slurp:
+        src: "{{ parsed_containers.path }}"
+      register: parsed_containers
+
+    - name: Save parsed containers
+      vars:
+        containers: "{{ parsed_containers.content | b64decode }}"
+      set_fact:
+        rdo_kolla_images: "{{ containers.split('\n') }}"
+  when: rdo_kolla_images is not defined or ( rdo_kolla_images is iterable and
+        rdo_kolla_images is not string and rdo_kolla_images | length > 0 )
+
 - name: Record relevant variables with ARA
   ara_record:
     key: "{{ item.key }}"
