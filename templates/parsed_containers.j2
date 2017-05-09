@@ -1,0 +1,3 @@
+{% for container in containers['container_images'] %}
+{{ container.imagename | regex_replace('(.*\/centos-binary-)','') | regex_replace('(:.*)', '') }}
+{% endfor %}
