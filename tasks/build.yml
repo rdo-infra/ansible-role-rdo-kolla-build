@@ -14,7 +14,24 @@
 #   under the License.
 #
 
-- name: "Build image: {{ image }}"
+- name: "Trigger image build: {{ images | join(', ') }}"
   command: >
     {{ kolla_build_path }} {{ image }} \
       --config-file={{ kolla_tmpdir }}/kolla-build.conf
+  async: 1800
+  poll: 0
+  with_items: "{{ images }}"
+  loop_control:
+    loop_var: "image"
+  register: async_results
+
+- name: "Build images: {{ images | join(', ') }}"
+  async_status:
+    jid: "{{ async_result_item.ansible_job_id }}"
+  with_items: "{{ async_results.results }}"
+  loop_control:
+    loop_var: "async_result_item"
+  register: async_poll_results
+  until: async_poll_results.finished
+  retries: 30
+  delay: 60

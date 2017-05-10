@@ -112,17 +112,22 @@
 
 # The with_items inline jinja provides the ability to use either a list format
 # or a comma-separated list of values interchangeably.
+- name: Support image tags provided by list or csv
+  set_fact:
+    kolla_rdo_images: >
+      {%- if kolla_rdo_images is iterable and kolla_rdo_images is not string %}
+      {{- kolla_rdo_images -}}
+      {%- else %}
+      {{- kolla_rdo_images.split(',') -}}
+      {%- endif %}
+
 - name: Build images
   vars:
-    image: "{{ item }}"
+    images:  "{{ item }}"
   include: build.yml
   static: no
-  with_items: >
-    {%- if kolla_rdo_images is iterable and kolla_rdo_images is not string %}
-    {{- kolla_rdo_images -}}
-    {%- else %}
-    {{- kolla_rdo_images.split(',') -}}
-    {%- endif %}
+  with_items:
+    - "{{ kolla_rdo_images | batch(5) | list }}"
   when: kolla_build | bool
   tags:
     - build
@@ -140,10 +145,10 @@
 
     - name: Tag images with version and push
       vars:
-        image: "{{ item }}"
+        images: "{{ item }}"
       include: push.yml
       static: no
-      with_items: "{{ built_images.stdout_lines }}"
+      with_items: "{{ built_images.stdout_lines | batch(3) | list }}"
       tags:
         - push
   when: kolla_push | bool
