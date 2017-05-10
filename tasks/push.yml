@@ -15,8 +15,25 @@
 #
 
 - block:
-    - name: "docker push {{ image }}:{{ kolla_tag }}"
+    - name: "Push images: {{ images | join(', ') }} ({{ kolla_tag }})"
       command: docker push {{ image }}:{{ kolla_tag }}
+      async: 900
+      poll: 0
+      with_items: "{{ images }}"
+      loop_control:
+        loop_var: "image"
+      register: async_results
+
+    - name: Wait for the image batch push to finish
+      async_status:
+        jid: "{{ async_result_item.ansible_job_id }}"
+      with_items: "{{ async_results.results }}"
+      loop_control:
+        loop_var: "async_result_item"
+      register: async_poll_results
+      until: async_poll_results.finished
+      retries: 30
+      delay: 30
 
     # Doing tag and push in the same task for the sake of doing less tasks
     - name: "docker push {{ image }}:{{ version_hash }}"
