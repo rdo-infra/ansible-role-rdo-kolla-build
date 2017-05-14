@@ -1,0 +1,34 @@
+- name: Create Docker certs directory for certificate authority
+  file:
+    path: "/etc/docker/certs.d/{{ kolla_registry }}"
+    state: "directory"
+    recurse: "yes"
+  when:
+    - openshift_certificate_authority is defined
+    - openshift_certificate_authority != ""
+
+- name: Install OpenShift registry certificate authority
+  copy:
+    content: "{{ openshift_certificate_authority }}"
+    dest: "/etc/docker/certs.d/{{ kolla_registry }}/openshift.crt"
+  when:
+    - openshift_certificate_authority is defined
+    - openshift_certificate_authority != ""
+
+- name: Install openshift-origin repository
+  package:
+    name: "centos-release-openshift-origin"
+    state: "present"
+
+- name: Disable centos-openshift-origin repository
+  command: yum-config-manager --disable centos-openshift-origin
+
+- name: Install OpenShift Origin clients
+  package:
+    name: "origin-clients"
+    state: "present"
+    enablerepo: "centos-openshift-origin"
+
+- name: Configure registry username
+  set_fact:
+    kolla_registry_username: 'unused'
