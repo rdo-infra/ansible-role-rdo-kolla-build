@@ -1,0 +1,16 @@
+- name: Create Docker certs directory for certificate authority
+  file:
+    path: "/etc/docker/certs.d/{{ kolla_registry }}"
+    state: "directory"
+    recurse: "yes"
+  when:
+    - openshift_certificate_authority is defined
+    - openshift_certificate_authority != ""
+
+- name: Install OpenShift registry certificate authority
+  copy:
+    content: "{{ openshift_certificate_authority }}"
+    dest: "/etc/docker/certs.d/{{ kolla_registry }}/openshift.crt"
+  when:
+    - openshift_certificate_authority is defined
+    - openshift_certificate_authority != ""

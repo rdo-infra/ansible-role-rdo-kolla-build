@@ -13,35 +13,21 @@
 #   License for the specific language governing permissions and limitations
 #   under the License.
 #
-
-- block:
-    # Validate this first so we don't try to build and push knowing that it
-    # will fail
-    - name: Validate that Docker Hub configuration file is present
-      stat:
-        path: "{{ docker_config }}/config.json"
-      register: docker_stat
-
-    - name: Fail if configuration directory does not exist
-      fail:
-        msg: >-
-         The file {{ docker_config }}/config.json is expected to be present and
-         contain Docker Hub authentication information.
-         This file is generated automatically with the command "docker login".
-      when: not docker_stat.stat.exists
-  when:
-    - kolla_push | bool
-    - not kolla_insecure_registry
-  tags:
-    - push
-
 - include: repositories.yml
   tags:
     - build
     - push
+
 - include: docker.yml
   tags:
     - setup
+
+- include: openshift.yml
+  static: "no"
+  tags:
+    - setup
+    - push
+  when: kolla_registry_type == "openshift"
 
 - include: kolla.yml
   tags:
@@ -110,6 +96,22 @@
     - build
     - push
 
+- name: Login to Docker registry
+  docker_login:
+    registry_url: "{{ kolla_registry }}"
+    username: "{{ kolla_registry_username }}"
+    password: "{{ kolla_registry_password }}"
+    email: "{{ kolla_registry_email | default(omit, true) }}"
+    reauthorize: "yes"
+  no_log: "yes"
+  tags:
+    - push
+  when:
+    - kolla_registry is defined and kolla_registry
+    - kolla_registry_username is defined and kolla_registry_username
+    - kolla_registry_password is defined and kolla_registry_password
+    - kolla_push
+
 # The with_items inline jinja provides the ability to use either a list format
 # or a comma-separated list of values interchangeably.
 - name: Build images
@@ -146,4 +148,4 @@
       with_items: "{{ built_images.stdout_lines }}"
       tags:
         - push
-  when: kolla_push | bool
+  when: kolla_push
