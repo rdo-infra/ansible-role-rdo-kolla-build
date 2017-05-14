@@ -9,9 +9,6 @@ for usage in TripleO_ with tooling provided by Kolla_.
 
 Requirements
 ============
-This role uses a ``tempfile`` task which is currently only available in Ansible
->=2.3.0.0.
-
 This Ansible role uses ARA_ to do reporting on the results of the role
 execution as well as track metadata on what the containers were built with.
 
