@@ -95,6 +95,21 @@
   notify:
     - Reload and restart docker
 
+- block:
+    - name: Create Docker certs directory for registry certificate authority
+      file:
+        path: "/etc/docker/certs.d/{{ kolla_registry }}"
+        state: "directory"
+        recurse: "yes"
+
+    - name: Install registry certificate authority
+      copy:
+        content: "{{ kolla_registry_cacert }}"
+        dest: "/etc/docker/certs.d/{{ kolla_registry }}/registry.crt"
+  when:
+    - kolla_registry_cecert is defined
+    - kolla_registry_cecert != ""
+
 - name: Flush handlers
   meta: flush_handlers
 
