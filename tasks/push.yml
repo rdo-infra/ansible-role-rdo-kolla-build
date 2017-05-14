@@ -25,5 +25,3 @@
       with_items:
         - "docker tag {{ image }}:{{ kolla_tag }} {{ image }}:{{ version_hash }}"
         - "docker push {{ image }}:{{ version_hash }}"
-  environment:
-    DOCKER_CONFIG: "{{ docker_config }}"
