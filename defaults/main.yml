@@ -2,13 +2,6 @@
 tripleo_overrides: "/usr/share/tripleo-common/container-images/tripleo_kolla_template_overrides.j2"
 tripleo_containers: "/usr/share/tripleo-common/container-images/overcloud_containers.yaml"
 
-# Location to the "config.json" file (defaults to $HOME/.docker)
-# This file is required when pushing to Docker Hub.
-# Note: Defaulting to ansible_env as opposed to an env lookup -- env lookup
-# will fetch the variable from the local machine, we're interested in the
-# remote machine home directory.
-docker_config: "{{ ansible_env.HOME }}/.docker"
-
 # Set up storage, overlay or btrfs
 docker_storage_driver: overlay
 
@@ -50,7 +43,14 @@ kolla_timeout: 120
 
 # Use a private registry, optionally insecure
 kolla_registry:
+kolla_registry_username: "{{ lookup('env', 'REGISTRY_USERNAME') | default(None, true) }}"
+kolla_registry_password: "{{ lookup('env', 'REGISTRY_PASSWORD') | default(None, true) }}"
+kolla_registry_email: "{{ lookup('env', 'REGISTRY_EMAIL') | default(None, true) }}"
 kolla_insecure_registry: false
+# Registry type can be either 'docker-registry' or 'openshift'
+kolla_registry_type: 'docker-registry'
+# OpenShift parameters
+openshift_certificate_authority:
 
 # This doesn't actually configure the kolla-build to push, we're pushing
 # ourselves in order to be able to, if need be, build and push separately.
