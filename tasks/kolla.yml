@@ -64,11 +64,11 @@
   when: kolla_setup_method == "source"
 
 - block:
-    - name: Install kolla and tripleo-common from packages
+    - name: Install kolla and tripleo-common-containers from packages
       vars:
         packages:
           - openstack-kolla
-          - openstack-tripleo-common
+          - openstack-tripleo-common-containers
       package:
         name: "{{ packages }}"
         state: "present"
