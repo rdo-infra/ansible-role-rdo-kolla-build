@@ -9,8 +9,8 @@ tripleo_containers: "/usr/share/openstack-tripleo-common-containers/container-im
 # remote machine home directory.
 docker_config: "{{ ansible_env.HOME }}/.docker"
 
-# Set up storage, overlay or btrfs
-docker_storage_driver: overlay
+# Set up storage to one of: overlay2, overlay, btrfs
+docker_storage_driver: "overlay2"
 
 # Values for docker_storage_driver: btrfs
 docker_btrfs_volume: "/tmp/docker-btrfs"
