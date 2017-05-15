@@ -68,7 +68,7 @@
       vars:
         packages:
           - openstack-kolla
-          - openstack-tripleo-common
+          - openstack-tripleo-common-containers
       package:
         name: "{{ packages }}"
         state: "present"

@@ -1,6 +1,6 @@
 ---
-tripleo_overrides: "/usr/share/tripleo-common/container-images/tripleo_kolla_template_overrides.j2"
-tripleo_containers: "/usr/share/tripleo-common/container-images/overcloud_containers.yaml"
+tripleo_overrides: "/usr/share/openstack-tripleo-common-containers/container-images/tripleo_kolla_template_overrides.j2"
+tripleo_containers: "/usr/share/openstack-tripleo-common-containers/container-images/overcloud_containers.yaml"
 
 # Location to the "config.json" file (defaults to $HOME/.docker)
 # This file is required when pushing to Docker Hub.
