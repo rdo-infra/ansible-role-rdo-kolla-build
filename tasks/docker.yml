@@ -107,8 +107,8 @@
         content: "{{ kolla_registry_cacert }}"
         dest: "/etc/docker/certs.d/{{ kolla_registry }}/registry.crt"
   when:
-    - kolla_registry_cecert is defined
-    - kolla_registry_cecert != ""
+    - kolla_registry_cacert is defined
+    - kolla_registry_cacert != ""
 
 - name: Flush handlers
   meta: flush_handlers
