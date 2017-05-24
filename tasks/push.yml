@@ -15,13 +15,13 @@
 #
 
 - block:
-    - name: "docker push {{ image }}:{{ kolla_tag }}"
-      command: docker push {{ image }}:{{ kolla_tag }}
-
     # Doing tag and push in the same task for the sake of doing less tasks
-    - name: "docker push {{ image }}:{{ version_hash }}"
+    - name: "Push and tag: {{ image }}"
       command: >
-        {{ item }}
+        {{ cmd }}
       with_items:
+        - "docker push {{ image }}:{{ kolla_tag }}"
         - "docker tag {{ image }}:{{ kolla_tag }} {{ image }}:{{ version_hash }}"
         - "docker push {{ image }}:{{ version_hash }}"
+      loop_control:
+        loop_var: "cmd"
