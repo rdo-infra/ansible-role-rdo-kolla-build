@@ -10,6 +10,7 @@ namespace         = {{ kolla_namespace }}
 registry          = {{ kolla_registry }}
 retries           = {{ kolla_retries }}
 rpm_setup_config  = {{ kolla_rpm_setup_config |join(',') }}
+skip_existing     = {{ kolla_skip_existing }}
 tag               = {{ kolla_tag }}
 template_only     = {{ kolla_template_only }}
 template_override = {{ kolla_template_override }}
