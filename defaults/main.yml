@@ -35,6 +35,7 @@ kolla_logs_dir:
 kolla_maintainer: "TripleO Project (http://tripleo.org)"
 kolla_namespace: "tripleo"
 kolla_retries: 3
+kolla_skip_parents: "true"
 kolla_tag: "latest"
 kolla_template_only: "false"
 kolla_template_override: "{{ tripleo_overrides }}"
