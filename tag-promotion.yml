@@ -1,0 +1,40 @@
+- name: "Promote image tag {{ source_tag }} to {{ destination_tag }}"
+  hosts: openstack_nodes
+  become: yes
+  become_user: root
+  tasks:
+    - name: Validate that we have a source and destination tag
+      fail:
+        msg: "You need to provide the source_tag and destination_tag variables."
+      when: source_tag is undefined or destination_tag is undefined
+
+    - name: Install OpenShift Origin repository
+      package:
+        name: "centos-release-openshift-origin"
+        state: "present"
+
+    - name: Install OpenShift Origin clients
+      package:
+        name: "origin-clients"
+        state: "present"
+
+    - name: Set up k8s_image_tag_filter.py
+      copy:
+        src: "k8s_image_tag_filter.py"
+        dest: "/usr/local/bin/k8s_image_tag_filter.py"
+        mode: "0755"
+
+    - name: Login to OpenShift
+      vars:
+        kolla_registry_password: "{{ lookup('env', 'REGISTRY_PASSWORD') | default(None, true) }}"
+      command: oc login --token {{ kolla_registry_password }} registry.rdoproject.org:8443
+      no_log: "yes"
+
+    - name: Retrieve list of images to tag
+      command: >
+        oc get is -o json | /usr/local/bin/k8s_image_tag_filter.py {{ source_tag }}
+      register: images
+
+    - name: Tag the images
+      command: oc tag {{ item }}:{{ source_tag }} {{ item }}:{{ destination_tag }}
+      with_items: "{{ images.stdout_lines }}"

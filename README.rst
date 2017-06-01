@@ -144,3 +144,13 @@ This will, on a CentOS host in the ``build_node`` Ansible inventory group:
 - Push them to the registry
 
 .. _tripleo-common: https://github.com/openstack/tripleo-common/blob/master/container-images/overcloud_containers.yaml
+
+Creating or updating a tag from an image already in the registry
+----------------------------------------------------------------
+
+The role ships a playbook, ``tag-promotion`` which wraps around the process
+of taking a tagged image that already exists on the registry and creating or updating
+a new tag.
+
+This is used to promote, for example, a given set of images tagged with a hash
+to 'latest-passed-ci'.
