@@ -1,0 +1,15 @@
+FROM centos:7
+
+EXPOSE {{ mirror_port }}
+ENTRYPOINT /root/start.sh
+
+COPY reposync.sh config.sh start.sh /root/
+COPY *.repo /etc/yum.repos.d/
+
+RUN yum install -y yum-utils createrepo epel-release
+RUN yum install -y lighttpd
+
+# host /etc/yum.repos.d must be bind mounted for this to work
+RUN chmod +x /root/reposync.sh; /root/reposync.sh
+RUN chmod +x /root/config.sh; /root/config.sh
+RUN chmod +x /root/start.sh

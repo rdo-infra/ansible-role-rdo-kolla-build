@@ -125,6 +125,9 @@
   tags:
     - build
 
+- name: Build repo mirror image
+  include: build-mirror.yml
+
 - block:
     # This is a bit weird due to the docker images format syntax clashing with jinja
     # https://docs.docker.com/engine/reference/commandline/images/#/formatting

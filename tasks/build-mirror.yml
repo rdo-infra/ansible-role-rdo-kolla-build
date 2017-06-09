@@ -1,0 +1,44 @@
+- name: get enabled delorean repos
+  shell:
+    yum -C repolist enabled | grep -o -E "^delorean[a-z-]*"
+  register: repos_out
+
+- set_fact:
+    repos: "{{ repos_out.stdout_lines }}"
+
+- name: crete docker context
+  file:
+    state: directory
+    path: "{{ mirror_context }}"
+
+- name: copy repo files to mirror_context
+  copy:
+    src: /tmp/yum.repos.d/
+    dest: "{{ mirror_context }}"
+
+- name: generate Dockerfile
+  template:
+    src: build-mirror-Dockerfile.j2
+    dest: "{{ mirror_context }}/Dockerfile"
+
+- name: generate reposync command
+  template:
+    src: build-mirror-reposync.sh.j2
+    dest: "{{ mirror_context }}/reposync.sh"
+
+- name: generate config command
+  template:
+    src: build-mirror-config.sh.j2
+    dest: "{{ mirror_context }}/config.sh"
+
+- name: copy starter command
+  copy:
+    src: build-mirror-start.sh
+    dest: "{{ mirror_context }}/start.sh"
+
+
+- name: Build mirror container
+  docker_image:
+    name: repo-mirror:latest
+    state: present
+    path: "{{ mirror_context }}"
