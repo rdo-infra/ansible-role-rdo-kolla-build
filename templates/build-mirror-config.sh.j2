@@ -1,0 +1,6 @@
+sed -i -e 's|server.document-root = .*|server.document-root = "{{ mirror_path  }}"|' /etc/lighttpd/lighttpd.conf
+sed -i -e 's|server.port = .*|server.port = {{ mirror_port  }}|' /etc/lighttpd/lighttpd.conf
+# useful for debugging
+sed -i -e 's|dir-listing.activate .*|dir-listing.activate = "enable"|' /etc/lighttpd/conf.d/dirlisting.conf
+
+

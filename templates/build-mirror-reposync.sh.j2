@@ -1,0 +1,4 @@
+{% for repoid in repos %}
+reposync -t /tmp/reposync -p {{ mirror_path  }} --repoid={{ repoid  }}
+createrepo --update {{ mirror_path }}/{{ repoid }}
+{% endfor %}

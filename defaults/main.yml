@@ -60,3 +60,9 @@ kolla_push: false
 # to build containers for. For example, 'nova' would build all parent and child
 # containers related to 'nova'.
 kolla_rdo_images:
+
+# selinux-safe port for mirror httpd
+mirror_port: 8009
+mirror_path: /var/www/delorean-mirror
+mirror_context: /tmp/build-mirror
+
