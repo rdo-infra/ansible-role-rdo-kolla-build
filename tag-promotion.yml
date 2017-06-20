@@ -30,11 +30,14 @@
       command: oc login --token {{ kolla_registry_password }} registry.rdoproject.org:8443
       no_log: "yes"
 
-    - name: Retrieve list of images to tag
-      command: >
-        oc get is -o json | /usr/local/bin/k8s_image_tag_filter.py {{ source_tag }}
-      register: images
+    - block:
+        - name: Retrieve list of images to tag
+          shell: >
+            oc get is -n {{ project }} -o json | /usr/local/bin/k8s_image_tag_filter.py {{ source_tag }}
+          register: images
 
-    - name: Tag the images
-      command: oc tag {{ item }}:{{ source_tag }} {{ item }}:{{ destination_tag }}
-      with_items: "{{ images.stdout_lines }}"
+        - name: Tag the images
+          command: oc tag -n {{ project }} {{ item }}:{{ source_tag }} {{ item }}:{{ destination_tag }}
+          with_items: "{{ images.stdout_lines }}"
+      vars:
+        project: "{{ kolla_namespace | default('tripleo') }}"
