@@ -14,7 +14,22 @@
 #   under the License.
 #
 
+# With the intent of pushing new images, we don't want to build an image
+# if it already exists
+# Skopeo is used here because it easily allows to inspect an image without
+# needing to pull it first, it also works on both Docker Hub and OpenShift
+# registry.
+- name: "Verify if {{ image }}:{{ version_hash }} exists"
+  command: skopeo inspect docker://{{ kolla_registry }}/{{ kolla_namespace }}/{{ image }}:{{ version_hash }}
+  changed_when: false
+  failed_when: false
+  register: image_exists
+# when: kolla_push
+
 - name: "Build image: {{ image }}"
   command: >
     {{ kolla_build_path }} {{ image }} \
       --config-file={{ kolla_tmpdir }}/kolla-build.conf
+  when:
+    - image_exists is defined
+    - image_exists.rc != 0
