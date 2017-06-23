@@ -64,7 +64,7 @@ This will, on a CentOS host in the ``build_node`` Ansible inventory group:
 Build and push all (default) supported containers to a private insecure docker-registry
 ---------------------------------------------------------------------------------------
 .. note:: Note that the default list of container images to build is provided
-          by `tripleo-common`_.
+          by `openstack overcloud container images prepare`.
 
 ::
 
@@ -91,12 +91,10 @@ This will, on a CentOS host in the ``build_node`` Ansible inventory group:
 - Build all default supported containers
 - Push them to the private registry 127.0.0.1:5000
 
-.. _tripleo-common: https://github.com/openstack/tripleo-common/blob/master/container-images/overcloud_containers.yaml
-
 Build and push all (default) supported containers to an authenticated registry
 ------------------------------------------------------------------------------
 .. note:: Note that the default list of container images to build is provided
-          by `tripleo-common`_.
+          by running ``openstack overcloud container images prepare``.
 
 ::
 
@@ -142,8 +140,6 @@ This will, on a CentOS host in the ``build_node`` Ansible inventory group:
 - Install and configure Kolla
 - Build all default supported containers
 - Push them to the registry
-
-.. _tripleo-common: https://github.com/openstack/tripleo-common/blob/master/container-images/overcloud_containers.yaml
 
 Creating or updating a tag from an image already in the registry
 ----------------------------------------------------------------
