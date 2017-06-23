@@ -20,6 +20,8 @@
     - push
 
 - include: docker.yml
+  static: no
+  when: docker_setup|bool
   tags:
     - setup
     - build
