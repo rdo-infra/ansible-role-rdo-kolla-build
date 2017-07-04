@@ -58,7 +58,7 @@
   vars:
     packages:
       - docker
-      - python-docker
+      - python2-docker
       - skopeo
   package:
     name: "{{ packages }}"
