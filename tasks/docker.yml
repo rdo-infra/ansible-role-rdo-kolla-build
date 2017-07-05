@@ -54,11 +54,11 @@
   when: docker_storage_driver == "btrfs" and not docker_btrfs.stat.exists
 
 # python-docker is required so we can leverage Ansible docker modules
-- name: Install docker, python-docker and skopeo
+- name: Install docker, python2-docker and skopeo
   vars:
     packages:
       - docker
-      - python-docker
+      - python2-docker
       - skopeo
   package:
     name: "{{ packages }}"
