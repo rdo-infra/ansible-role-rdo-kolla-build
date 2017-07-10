@@ -24,7 +24,7 @@
   changed_when: false
   failed_when: false
   register: image_exists
-  when: kolla_push
+  when: not kolla_force_build
 
 - name: "Build image: {{ image }}"
   command: >
