@@ -24,12 +24,11 @@
   changed_when: false
   failed_when: false
   register: image_exists
-  when: kolla_push
+  when: not kolla_force_build
 
 - name: "Build image: {{ image }}"
   command: >
     {{ kolla_build_path }} {{ image }} \
       --config-file={{ kolla_tmpdir }}/kolla-build.conf
-  when:
-    - image_exists is defined
-    - image_exists.rc is defined and image_exists.rc != 0
+  when: (image_exists.rc is defined and image_exists.rc != 0) or
+        kolla_force_build
