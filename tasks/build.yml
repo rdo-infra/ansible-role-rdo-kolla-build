@@ -20,7 +20,7 @@
 # needing to pull it first, it also works on both Docker Hub and OpenShift
 # registry.
 - name: "Verify if {{ image }}:{{ version_hash }} exists"
-  command: skopeo inspect docker://{{ kolla_registry }}/{{ kolla_namespace }}/{{ image }}:{{ version_hash }}
+  command: skopeo inspect docker://{{ kolla_registry }}/{{ kolla_namespace }}/centos-binary-{{ image }}:{{ version_hash }}
   changed_when: false
   failed_when: false
   register: image_exists
