@@ -18,6 +18,13 @@
   file:
     path: "{{ kolla_tmpdir }}"
     state: "directory"
+    recurse: "yes"
+
+- name: Create kolla log directory
+  file:
+    path: "{{ kolla_logs_dir }}"
+    state: "directory"
+    recurse: "yes"
 
 - block:
     - name: Install python-setuptools and git
