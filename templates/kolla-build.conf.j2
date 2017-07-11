@@ -17,3 +17,15 @@ template_override = {{ kolla_template_override }}
 template_override = {{ kolla_tmpdir }}/template-overrides.j2
 threads           = {{ kolla_threads }}
 timeout           = {{ kolla_timeout }}
+
+[profiles]
+tripleo_default = {{ tripleo_default_images | join(',') }}
+
+{% if kolla_rdo_images %}
+    {% if kolla_rdo_images is iterable and kolla_rdo_images is not string %}
+        {% set tripleo_custom_images = kolla_rdo_images %}
+    {% else %}
+        {% set tripleo_custom_images = kolla_rdo_images.split(',') | default('') %}
+    {% endif %}
+tripleo_custom = {{ tripleo_custom_images | join(',') }}
+{% endif %}
