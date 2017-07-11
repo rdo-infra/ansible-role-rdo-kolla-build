@@ -31,40 +31,6 @@
     - build
     - push
 
-# This block parses the container-images/overcloud_containers.yaml file
-# provided by tripleo-common. It is the default if kolla_rdo_images is not set.
-# It boils down to
-# - Removing the prefix: the namespace and the "centos-binary-"
-# - Removing the suffix, for example ":latest"
-- block:
-    - name: Load supported containers
-      slurp:
-        src: "{{ tripleo_containers }}"
-      register: supported_containers
-
-    - name: Parse supported containers
-      vars:
-       containers: "{{ supported_containers.content | b64decode | from_yaml }}"
-      template:
-        src: parsed_containers.j2
-        dest: "{{ kolla_tmpdir/parsed_containers.txt }}"
-
-    - name: Load parsed containers
-      slurp:
-        src: "{{ kolla_tmpdir/parsed_containers.txt }}"
-      register: parsed_containers
-
-    - debug:
-        msg: "{{ parsed_containers.content | b64decode }}"
-
-    # [:-1] to strip the trailing newline (haven't found a better way, sorry)
-    - name: Save parsed containers
-      vars:
-        containers: "{{ parsed_containers.content | b64decode }}"
-      set_fact:
-        kolla_rdo_images: "{{ containers[:-1].split('\n') }}"
-  when: kolla_rdo_images is not defined or not kolla_rdo_images
-
 - name: Record relevant variables with ARA
   ara_record:
     key: "{{ item.key }}"
@@ -77,6 +43,7 @@
     - { key: "trunk_deps_repository", value: "{{ trunk_deps_repository }}", type: "url" }
     - { key: "build_id", value: "{{ build_id }}" }
     - { key: "kolla_rdo_images", value: "{{ kolla_rdo_images }}", type: "list" }
+    - { key: "tripleo_default_images", value: "{{ tripleo_default_images }}", type: "list" }
   ignore_errors: "yes"
   tags:
     - setup
@@ -101,18 +68,23 @@
 
 # The with_items inline jinja provides the ability to use either a list format
 # or a comma-separated list of values interchangeably.
-- name: Build images
-  vars:
-    image: "{{ item }}"
-  include: build.yml
-  static: no
-  with_items: >
-    {%- if kolla_rdo_images is iterable and kolla_rdo_images is not string %}
-    {{- kolla_rdo_images -}}
-    {%- else %}
-    {{- kolla_rdo_images.split(',') -}}
-    {%- endif %}
-  when: kolla_build | bool
+- name: Build default images
+  command: >
+    {{ kolla_build_path }} --profile tripleo_default \
+      --config-file={{ kolla_tmpdir }}/kolla-build.conf
+  when:
+   - kolla_build | bool
+   - kolla_rdo_images is not defined or not kolla_rdo_images
+  tags:
+    - build
+
+- name: Build custom images
+  command: >
+    {{ kolla_build_path }} --profile tripleo_custom \
+      --config-file={{ kolla_tmpdir }}/kolla-build.conf
+  when:
+   - kolla_build | bool
+   - kolla_rdo_images is defined and kolla_rdo_images
   tags:
     - build
 
