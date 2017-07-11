@@ -31,7 +31,7 @@ kolla_base_image:
 kolla_base_tag: "latest"
 kolla_debug: "false"
 kolla_install_type: "binary"
-kolla_logs_dir:
+kolla_logs_dir: "{{ kolla_tmpdir }}/logs"
 kolla_maintainer: "TripleO Project (http://tripleo.org)"
 kolla_namespace: "tripleo"
 kolla_retries: 3
