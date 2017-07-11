@@ -55,11 +55,9 @@ kolla_registry_cacert:
 # ourselves in order to be able to, if need be, build and push separately.
 kolla_build: true
 kolla_push: false
-# Build the containers even if they already exist on the remote registry
-kolla_force_build: false
 
-# kolla_rdo_images is used to override the default provided by tripleo-common
-# inside container-images/overcloud_containers.yaml. It is a list of patterns
-# to build containers for. For example, 'nova' would build all parent and child
-# containers related to 'nova'.
+# kolla_rdo_images is what ends up being configured for the kolla-build profile
+# "tripleo_custom". It is a list of patterns to build containers for.
+# For example, 'nova' would build all parent and child containers related to
+# 'nova'.
 kolla_rdo_images:
