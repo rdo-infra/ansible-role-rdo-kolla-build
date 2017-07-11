@@ -42,25 +42,16 @@
         src: "{{ tripleo_containers }}"
       register: supported_containers
 
-    - name: Create temporary file for parsed containers
-      command: mktemp --suffix=_kolla-build
-      register: tmpfile
-
-    - name: Adjust permissions on parsed containers file
-      file:
-        path: "{{ tmpfile.stdout }}"
-        mode: "0755"
-
     - name: Parse supported containers
       vars:
        containers: "{{ supported_containers.content | b64decode | from_yaml }}"
       template:
         src: parsed_containers.j2
-        dest: "{{ tmpfile.stdout }}"
+        dest: "{{ kolla_tmpdir/parsed_containers.txt }}"
 
     - name: Load parsed containers
       slurp:
-        src: "{{ tmpfile.stdout }}"
+        src: "{{ kolla_tmpdir/parsed_containers.txt }}"
       register: parsed_containers
 
     - debug:
