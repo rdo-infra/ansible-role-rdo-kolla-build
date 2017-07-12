@@ -64,8 +64,8 @@
     state: "present"
 
 # Workaround Docker MTU issue https://bugs.launchpad.net/kolla-ansible/+bug/1654395
-- name: Override Docker defaults to include MTU parameter
-  copy:
+- name: Override Docker defaults to include MTU parameter and network options
+  template:
     src: "docker-network"
     dest: "/etc/sysconfig/docker-network"
   notify:

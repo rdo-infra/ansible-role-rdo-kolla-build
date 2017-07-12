@@ -1,0 +1,2 @@
+# MTU tweak: https://bugs.launchpad.net/kolla-ansible/+bug/1654395
+DOCKER_NETWORK_OPTIONS="--mtu 1300 --max-concurrent-downloads={{ kolla_threads }} --max-concurrent-uploads={{ kolla_threads }}"
