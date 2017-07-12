@@ -40,24 +40,24 @@
         fstype: "btrfs"
         opts: -f
 
-    - name: Pre-create or ensure /var/lib/docker exists
+    - name: Pre-create or ensure /var/lib/docker-latest exists
       file:
-        path: "/var/lib/docker"
+        path: "/var/lib/docker-latest"
         state: "directory"
 
-    - name: Mount the btrfs device to /var/lib/docker
+    - name: Mount the btrfs device to /var/lib/docker-latest
       mount:
-        name: "/var/lib/docker"
+        name: "/var/lib/docker-latest"
         src: "{{ btrfs_device.stdout }}"
         fstype: "btrfs"
         state: "mounted"
   when: docker_storage_driver == "btrfs" and not docker_btrfs.stat.exists
 
 # python-docker is required so we can leverage Ansible docker modules
-- name: Install docker, python-docker
+- name: Install docker-latest, python-docker
   vars:
     packages:
-      - docker
+      - docker-latest
       - python-docker
   package:
     name: "{{ packages }}"
@@ -67,20 +67,20 @@
 - name: Override Docker defaults to include MTU parameter and network options
   template:
     src: "docker-network"
-    dest: "/etc/sysconfig/docker-network"
+    dest: "/etc/sysconfig/docker-latest-network"
   notify:
     - Reload and restart docker
 
 - name: Specify storage options
   template:
     src: "docker-storage"
-    dest: "/etc/sysconfig/docker-storage"
+    dest: "/etc/sysconfig/docker-latest-storage"
   notify:
     - Reload and restart docker
 
 - name: Remove --selinux-enabled from /etc/sysconfig/docker
   lineinfile:
-    dest: "/etc/sysconfig/docker"
+    dest: "/etc/sysconfig/docker-latest"
     regexp: "^OPTIONS="
     line: "OPTIONS='--log-driver=journald --signature-verification=false'"
   notify:
@@ -88,7 +88,7 @@
 
 - name: Set up insecure registry
   lineinfile:
-    dest: "/etc/sysconfig/docker"
+    dest: "/etc/sysconfig/docker-latest"
     regexp: "^INSECURE_REGISTRY="
     line: "INSECURE_REGISTRY='--insecure-registry {{ kolla_registry }}'"
   when: kolla_insecure_registry
@@ -98,14 +98,14 @@
 - block:
     - name: Create Docker certs directory for registry certificate authority
       file:
-        path: "/etc/docker/certs.d/{{ kolla_registry }}"
+        path: "/etc/docker-latest/certs.d/{{ kolla_registry }}"
         state: "directory"
         recurse: "yes"
 
     - name: Install registry certificate authority
       copy:
         content: "{{ kolla_registry_cacert }}"
-        dest: "/etc/docker/certs.d/{{ kolla_registry }}/registry.crt"
+        dest: "/etc/docker-latest/certs.d/{{ kolla_registry }}/registry.crt"
   when:
     - kolla_registry_cacert is defined
     - kolla_registry_cacert is not none
@@ -115,6 +115,6 @@
 
 - name: Enable and start Docker
   service:
-    name: "docker"
+    name: "docker-latest"
     state: "started"
     enabled: "yes"

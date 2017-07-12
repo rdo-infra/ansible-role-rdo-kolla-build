@@ -18,4 +18,4 @@
   systemd:
     state: restarted
     daemon_reload: yes
-    name: docker
+    name: docker-latest
