@@ -42,6 +42,7 @@
     - { key: "trunk_repository", value: "{{ hashed_trunk_repository }}", type: "url" }
     - { key: "trunk_deps_repository", value: "{{ trunk_deps_repository }}", type: "url" }
     - { key: "build_id", value: "{{ build_id }}" }
+    - { key: "build_profile", value: "{{ build_profile }}" }
     - { key: "kolla_rdo_images", value: "{{ kolla_rdo_images }}", type: "list" }
     - { key: "tripleo_default_images", value: "{{ tripleo_default_images }}", type: "list" }
   ignore_errors: "yes"
@@ -66,27 +67,28 @@
     - kolla_registry_password is defined and kolla_registry_password
     - kolla_push
 
-# The with_items inline jinja provides the ability to use either a list format
-# or a comma-separated list of values interchangeably.
-- name: Build default images
+- name: Build images
   command: >
-    {{ kolla_build_path }} --profile tripleo_default \
+    {{ kolla_build_path }} --profile {{ build_profile }} \
       --config-file={{ kolla_tmpdir }}/kolla-build.conf
   when:
-   - kolla_build | bool
-   - kolla_rdo_images is not defined or not kolla_rdo_images
+    - kolla_build
+    - not kolla_push
   tags:
     - build
 
-- name: Build custom images
+# When pushing, we're using kolla-build to do the initial image push to benefit
+# from maximum concurrency. Tagging is done afterwards.
+- name: Build and push images
   command: >
-    {{ kolla_build_path }} --profile tripleo_custom \
-      --config-file={{ kolla_tmpdir }}/kolla-build.conf
+    {{ kolla_build_path }} --profile {{ build_profile }} \
+      --config-file={{ kolla_tmpdir }}/kolla-build.conf --push
   when:
-   - kolla_build | bool
-   - kolla_rdo_images is defined and kolla_rdo_images
+    - kolla_build
+    - kolla_push
   tags:
     - build
+    - push
 
 - block:
     # This is a bit weird due to the docker images format syntax clashing with jinja
@@ -99,10 +101,10 @@
       tags:
         - push
 
-    - name: Tag images with version and push
+    - name: Tag images
       vars:
         image: "{{ item }}"
-      include: push.yml
+      include: tag.yml
       static: no
       with_items: "{{ built_images.stdout_lines }}"
       tags:
