@@ -1,0 +1,87 @@
+{% extends parent_template %}
+
+# Disable external repos
+{% set base_yum_repo_files_override = [] %}
+{% set base_yum_url_packages_override = [] %}
+{% set base_yum_repo_keys_override = [] %}
+
+# Remove EPEL and the dependency requiring it
+{% set base_centos_yum_repo_packages_remove = ['epel-release'] %}
+{% set cinder_volume_packages_remove = ['scsi-target-utils'] %}
+
+# This installs the puppet dependency in the base container and includes helper scripts
+# Rsync is required for docker-puppet.py to move the generated config to /var/lib/config-data
+# Cron is required by multiple services
+{% set base_centos_binary_packages_append = ['openstack-tripleo-common-container-base', 'rsync', 'cronie'] %}
+{% set nova_scheduler_packages_append = ['openstack-tripleo-common'] %}
+
+# Required for mistral-db-populate to load tripleo custom actions on
+# the undercloud
+{% set mistral_base_packages_append = ['openstack-tripleo-common'] %}
+
+# NOTE: Mistral executor needs to run nova-manage cells_v2 commands on
+# the undercloud baremetal workflows.
+{% set mistral_executor_packages_append = ['openstack-nova-common'] %}
+
+# FIXME (kolla review to add ceilometer to swift proxy image)
+# NOTE (jaosorior): swift proxy with TLS everywhere needs these packages.
+{% set swift_proxy_server_packages_append = ['openstack-ceilometer-common', 'httpd', 'mod_ssl'] %}
+
+# Required for the Swift object replication
+{% set swift_object_packages_append = ['xinetd'] %}
+
+# NOTE (jaosorior): glance-api with TLS everywhere needs these packages.
+{% set glance_api_packages_append = ['httpd', 'mod_ssl'] %}
+
+# NOTE (jaosorior): neutron-server with TLS everywhere needs these packages.
+{% set neutron_server_packages_append = ['httpd', 'mod_ssl'] %}
+
+# Remove packages not present in repos
+{% set openstack_base_packages_remove = ['Percona-Server-shared-56'] %}
+
+# Use mariadb-server-galera and xinetd for galera and clustercheck
+{% set mariadb_packages_remove = ['MariaDB-Galera-server', 'MariaDB-client'] %}
+{% set mariadb_packages_append = ['mariadb-server', 'mariadb-server-galera', 'xinetd'] %}
+
+# redis resource-agent requires pidof
+{% set redis_packages_append = ['sysvinit-tools'] %}
+
+{% block mariadb_footer %}
+# We'll configure mariadb with galera.cnf
+RUN rm /etc/my.cnf.d/mariadb-server.cnf /etc/my.cnf.d/auth_gssapi.cnf
+
+RUN yum install -y pacemaker pacemaker-remote pcs libqb resource-agents && mkdir /etc/libqb
+{% endblock %}
+
+{% block rabbitmq_footer %}
+RUN yum install -y pacemaker pacemaker-remote pcs libqb resource-agents && mkdir /etc/libqb
+{% endblock %}
+
+{% block redis_footer %}
+RUN yum install -y pacemaker pacemaker-remote pcs libqb resource-agents && mkdir /etc/libqb
+{% endblock %}
+
+{% block haproxy_footer %}
+RUN yum install -y pacemaker pacemaker-remote pcs libqb resource-agents && mkdir /etc/libqb
+{% endblock %}
+
+{% block cinder_volume_footer %}
+RUN yum install -y pacemaker pacemaker-remote pcs libqb resource-agents && mkdir /etc/libqb
+{% endblock %}
+
+{% block cinder_backup_footer %}
+RUN yum install -y pacemaker pacemaker-remote pcs libqb resource-agents && mkdir /etc/libqb
+{% endblock %}
+
+{% block manila_share_footer %}
+RUN yum install -y pacemaker pacemaker-remote pcs libqb resource-agents && mkdir /etc/libqb
+{% endblock %}
+
+{% block base_footer %}
+# workaround LP1696283
+RUN mkdir -p /etc/ssh && touch /etc/ssh/ssh_known_hosts
+{% endblock %}
+
+# Required for nova migration
+{% set nova_compute_packages_append = ['openstack-nova-migration', 'openssh-server'] %}
+{% set nova_libvirt_packages_append = ['openstack-nova-migration'] %}

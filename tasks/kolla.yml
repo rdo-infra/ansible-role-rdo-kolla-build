@@ -80,6 +80,12 @@
         name: "{{ packages }}"
         state: "present"
 
+    # https://review.openstack.org/#/c/483473
+    - name: Patch tripleo_kolla_template_overrides.j2
+      file:
+        src: tripleo_kolla_template_overrides.j2
+        dest: "{{ tripleo_overrides }}"
+
     - name: Retrieve Kolla version
       command: rpm -q openstack-kolla --qf "%{VERSION}-%{RELEASE}"
       register: kolla_version
