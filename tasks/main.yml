@@ -31,20 +31,19 @@
     - build
     - push
 
-- name: Record relevant variables with ARA
-  ara_record:
-    key: "{{ item.key }}"
-    value: "{{ item.value }}"
-    type: "{{ item.type |default('text') }}"
+- name: Record relevant variables
+  copy:
+    content: "{{ item.value | to_nice_json }}"
+    dest: "{{ kolla_tmpdir }}/{{ item.key }}.txt"
   with_items:
     - { key: "kolla_version", value: "{{ kolla_version.stdout }}" }
     - { key: "version_hash", value: "{{ version_hash }}" }
-    - { key: "trunk_repository", value: "{{ hashed_trunk_repository }}", type: "url" }
-    - { key: "trunk_deps_repository", value: "{{ trunk_deps_repository }}", type: "url" }
+    - { key: "trunk_repository", value: "{{ hashed_trunk_repository }}" }
+    - { key: "trunk_deps_repository", value: "{{ trunk_deps_repository }}" }
     - { key: "build_id", value: "{{ build_id }}" }
     - { key: "build_profile", value: "{{ build_profile }}" }
-    - { key: "kolla_rdo_images", value: "{{ kolla_rdo_images }}", type: "list" }
-    - { key: "tripleo_default_images", value: "{{ tripleo_default_images }}", type: "list" }
+    - { key: "kolla_rdo_images", value: "{{ kolla_rdo_images }}" }
+    - { key: "tripleo_default_images", value: "{{ tripleo_default_images }}" }
   ignore_errors: "yes"
   tags:
     - setup

@@ -7,25 +7,6 @@ for usage in TripleO_ with tooling provided by Kolla_.
 .. _TripleO: http://tripleo.org/
 .. _Kolla: https://github.com/openstack/kolla
 
-Requirements
-============
-This Ansible role uses ARA_ to do reporting on the results of the role
-execution as well as track metadata on what the containers were built with.
-
-To set up ARA::
-
-    pip install ara
-
-    ara_location=$(python -c "import os,ara; print(os.path.dirname(ara.__file__))")
-    export ANSIBLE_CALLBACK_PLUGINS="${ara_location}/plugins/callbacks"
-    export ANSIBLE_ACTION_PLUGINS="${ara_location}/plugins/actions"
-    export ANSIBLE_LIBRARY="${ara_location}/plugins/modules"
-
-ARA can also be configured to be used through your `ansible.cfg file`_.
-
-.. _ARA: https://github.com/openstack/ara
-.. _ansible.cfg file: https://ara.readthedocs.io/en/latest/configuration.html#using-ansible-cfg
-
 Parameters and configuration
 ============================
 For the full list of parameters and configuration available for this role,
