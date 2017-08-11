@@ -40,4 +40,4 @@
           command: oc tag -n {{ project }} {{ item }}:{{ source_tag }} {{ item }}:{{ destination_tag }}
           with_items: "{{ images.stdout_lines }}"
       vars:
-        project: "{{ kolla_namespace | default('tripleo') }}"
+        project: "{{ kolla_namespace | default('master') }}"
