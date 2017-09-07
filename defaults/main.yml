@@ -39,7 +39,7 @@ kolla_skip_existing: "true"
 kolla_tag: "latest"
 kolla_template_only: "false"
 kolla_template_override: "{{ tripleo_overrides }}"
-kolla_threads: 8
+kolla_threads: 4
 kolla_timeout: 120
 
 # Use a private registry, optionally insecure
