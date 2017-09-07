@@ -129,6 +129,16 @@
     build_id: "{{ lookup('pipe', 'date +%s') }}"
   when: build_id is not defined
 
+- name: Set Kolla build profile
+  set_fact:
+    build_profile: >
+      {% if kolla_rdo_images is defined and kolla_rdo_images -%}
+      {% set profile = "tripleo_custom" -%}
+      {% else -%}
+      {% set profile = "tripleo_default" -%}
+      {% endif -%}
+      {{- profile -}}
+
 - name: Set up kolla-build.conf
   template:
     src: "kolla-build.conf.j2"
@@ -139,12 +149,3 @@
     src: "template-overrides.j2"
     dest: "{{ kolla_tmpdir }}/template-overrides.j2"
 
-- name: Set Kolla build profile
-  set_fact:
-    build_profile: >
-      {% if kolla_rdo_images is defined and kolla_rdo_images -%}
-      {% set profile = "tripleo_custom" -%}
-      {% else -%}
-      {% set profile = "tripleo_default" -%}
-      {% endif -%}
-      {{- profile -}}
