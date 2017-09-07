@@ -71,11 +71,12 @@
   when: kolla_setup_method == "source"
 
 - block:
-    - name: Install kolla and tripleo-common-containers from packages
+    - name: Install kolla, tripleo-common-containers, python-tripleoclient from packages
       vars:
         packages:
           - openstack-kolla
           - openstack-tripleo-common-containers
+          - python-tripleoclient
       package:
         name: "{{ packages }}"
         state: "present"
@@ -95,34 +96,25 @@
     msg: "Kolla setup method must be 'source' or 'binary'"
   when: kolla_setup_method != "source" and kolla_setup_method != "binary"
 
-# This block parses the container-images/overcloud_containers.yaml file
-# provided by tripleo-common. It is the default if kolla_rdo_images is not set.
+# These tasks parse the output from the prepare call to build a full list of
+# images to build. It is the default if kolla_rdo_images is not set.
 # It boils down to
-# - Removing the prefix: the namespace and the "centos-binary-"
-# - Removing the suffix, for example ":latest"
-- name: Load supported containers
-  slurp:
-    src: "{{ tripleo_containers }}"
+# - Removing the prefix "imagename: x/x-" and suffix "-x:x" from all entries
+# - Store the list value within container_images
+- name: Generate container image yaml
+  shell: >
+    openstack overcloud container image prepare \
+      --namespace x --prefix x --suffix x --tag x | \
+      sed -e 's/imagename: x\/x-//' -e 's/-x:x//'
   register: supported_containers
 
 - name: Parse supported containers
-  vars:
-   containers: "{{ supported_containers.content | b64decode | from_yaml }}"
-  template:
-    src: parsed_containers.j2
-    dest: "{{ kolla_tmpdir }}/parsed_containers.txt"
-
-- name: Load parsed containers
-  slurp:
-    src: "{{ kolla_tmpdir }}/parsed_containers.txt"
-  register: parsed_containers
-
-# [:-1] to strip the trailing newline (haven't found a better way, sorry)
-- name: Save parsed containers
-  vars:
-    containers: "{{ parsed_containers.content | b64decode }}"
   set_fact:
-    tripleo_default_images: "{{ containers[:-1].split('\n') }}"
+    containers: "{{ supported_containers.stdout | from_yaml }}"
+
+- name: Save parsed containers
+  set_fact:
+    tripleo_default_images: "{{ containers.container_images }}"
 
 - name: Generate image build_id
   set_fact:

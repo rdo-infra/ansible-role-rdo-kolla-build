@@ -1,6 +1,5 @@
 ---
 tripleo_overrides: "/usr/share/openstack-tripleo-common-containers/container-images/tripleo_kolla_template_overrides.j2"
-tripleo_containers: "/usr/share/openstack-tripleo-common-containers/container-images/overcloud_containers.yaml"
 
 # Set up storage to one of: overlay2, overlay, btrfs
 docker_storage_driver: "overlay2"
