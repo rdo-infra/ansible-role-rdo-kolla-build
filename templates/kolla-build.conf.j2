@@ -17,6 +17,8 @@ template_override = {{ kolla_template_override }}
 template_override = {{ kolla_tmpdir }}/template-overrides.j2
 threads           = {{ kolla_threads }}
 timeout           = {{ kolla_timeout }}
+push              = {{ kolla_push }}
+profile           = {{ build_profile }}
 
 [profiles]
 tripleo_default = {{ tripleo_default_images | join(',') }}

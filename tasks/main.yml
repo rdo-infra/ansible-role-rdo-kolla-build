@@ -66,25 +66,10 @@
     - kolla_registry_password is defined and kolla_registry_password
     - kolla_push
 
-- name: Build images
+- name: Build {% if kolla_push %}and push {% endif %}images
   command: >
-    {{ kolla_build_path }} --profile {{ build_profile }} \
-      --config-file={{ kolla_tmpdir }}/kolla-build.conf
-  when:
-    - kolla_build
-    - not kolla_push
-  tags:
-    - build
-
-# When pushing, we're using kolla-build to do the initial image push to benefit
-# from maximum concurrency. Tagging is done afterwards.
-- name: Build and push images
-  command: >
-    {{ kolla_build_path }} --profile {{ build_profile }} \
-      --config-file={{ kolla_tmpdir }}/kolla-build.conf --push
-  when:
-    - kolla_build
-    - kolla_push
+    {{ kolla_build_path }} --config-file={{ kolla_tmpdir }}/kolla-build.conf
+  when: kolla_build or kolla_push
   tags:
     - build
     - push
