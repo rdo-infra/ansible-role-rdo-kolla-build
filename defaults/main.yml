@@ -33,7 +33,7 @@ kolla_debug: "false"
 kolla_install_type: "binary"
 kolla_logs_dir: "{{ kolla_tmpdir }}/logs"
 kolla_maintainer: "TripleO Project (http://tripleo.org)"
-kolla_namespace: "master"
+kolla_namespace: "{{ openstack_release }}"
 kolla_retries: 3
 kolla_skip_existing: "true"
 kolla_tag: "latest"
