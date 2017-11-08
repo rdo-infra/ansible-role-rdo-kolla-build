@@ -1,6 +1,5 @@
 [DEFAULT]
 base              = {{ kolla_base }}
-base_image        = {{ kolla_base_image }}
 base_tag          = {{ kolla_base_tag }}
 debug             = {{ kolla_debug }}
 install_type      = {{ kolla_install_type }}
@@ -15,7 +14,8 @@ tag               = {{ version_hash }}
 template_only     = {{ kolla_template_only }}
 template_override = {{ kolla_template_override }}
 template_override = {{ kolla_tmpdir }}/template-overrides.j2
-threads           = {{ kolla_threads }}
+threads           = 8
+push_threads      = 4
 timeout           = {{ kolla_timeout }}
 
 [profiles]
