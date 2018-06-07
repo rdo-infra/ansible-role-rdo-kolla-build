@@ -1,0 +1,10 @@
+- project:
+    name: rdo-infra/ansible-role-rdo-kolla-build
+    check:
+      jobs:
+        - tox-linters
+        - legacy-rdo-kolla-build-containers
+    gate:
+      queue: ansible-role-rdo-base
+      jobs:
+        - tox-linters
