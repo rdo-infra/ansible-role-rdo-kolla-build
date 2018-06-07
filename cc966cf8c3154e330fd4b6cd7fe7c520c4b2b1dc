@@ -1,0 +1,9 @@
+Code-Review+2: hguemar <hguemar@fedoraproject.org>
+Code-Review+2: David Moreau Simard <dms@redhat.com>
+Workflow+1: David Moreau Simard <dms@redhat.com>
+Verified+2: Jenkins CI <admin@rpmfactory.beta.rdoproject.org>
+Submitted-by: Jenkins CI <admin@rpmfactory.beta.rdoproject.org>
+Submitted-at: Thu, 07 Jun 2018 20:47:57 +0000
+Reviewed-on: https://review.rdoproject.org/r/14128
+Project: rdo-infra/ansible-role-rdo-kolla-build
+Branch: refs/heads/master
