@@ -57,7 +57,6 @@
     password: "{{ kolla_registry_password }}"
     email: "{{ kolla_registry_email | default(omit, true) }}"
     reauthorize: "yes"
-  no_log: "yes"
   tags:
     - push
   when:
