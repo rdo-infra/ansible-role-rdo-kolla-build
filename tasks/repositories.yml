@@ -31,6 +31,11 @@
           - "{{ hashed_trunk_repository }}"
           - "{{ trunk_deps_repository }}"
 
+     - name: Add extra rpm repos if defined
+       set_fact:
+         kolla_rpm_setup_config: "{{ kolla_rpm_setup_config }} + {{ extra_rpm_repos }}"
+       when: extra_rpm_repos
+
     - name: Fetch repo file
       get_url:
         url: "{{ item }}"
