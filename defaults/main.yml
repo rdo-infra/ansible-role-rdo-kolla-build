@@ -22,6 +22,7 @@ kolla_git_version: "master"
 openstack_release: "master"
 trunk_repository: "https://trunk.rdoproject.org/centos7-{{ openstack_release }}/current-passed-ci/delorean.repo"
 trunk_deps_repository: "https://trunk.rdoproject.org/centos7-{{ openstack_release }}/delorean-deps.repo"
+extra_rpm_repos: []
 
 # kolla-build.conf
 # For more information, refer to Kolla documentation or:
