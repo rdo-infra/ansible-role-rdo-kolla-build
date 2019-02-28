@@ -43,7 +43,6 @@
     - { key: "build_id", value: "{{ build_id }}" }
     - { key: "build_profile", value: "{{ build_profile }}" }
     - { key: "kolla_rdo_images", value: "{{ kolla_rdo_images }}" }
-    - { key: "tripleo_default_images", value: "{{ tripleo_default_images }}" }
   ignore_errors: "yes"
   tags:
     - setup
