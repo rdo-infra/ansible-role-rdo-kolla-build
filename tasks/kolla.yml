@@ -95,35 +95,6 @@
     msg: "Kolla setup method must be 'source' or 'binary'"
   when: kolla_setup_method != "source" and kolla_setup_method != "binary"
 
-# This block parses the container-images/overcloud_containers.yaml file
-# provided by tripleo-common. It is the default if kolla_rdo_images is not set.
-# It boils down to
-# - Removing the prefix: the namespace and the "centos-binary-"
-# - Removing the suffix, for example ":latest"
-- name: Load supported containers
-  slurp:
-    src: "{{ tripleo_containers }}"
-  register: supported_containers
-
-- name: Parse supported containers
-  vars:
-   containers: "{{ supported_containers.content | b64decode | from_yaml }}"
-  template:
-    src: parsed_containers.j2
-    dest: "{{ kolla_tmpdir }}/parsed_containers.txt"
-
-- name: Load parsed containers
-  slurp:
-    src: "{{ kolla_tmpdir }}/parsed_containers.txt"
-  register: parsed_containers
-
-# [:-1] to strip the trailing newline (haven't found a better way, sorry)
-- name: Save parsed containers
-  vars:
-    containers: "{{ parsed_containers.content | b64decode }}"
-  set_fact:
-    tripleo_default_images: "{{ containers[:-1].split('\n') }}"
-
 - name: Generate image build_id
   set_fact:
     build_id: "{{ lookup('pipe', 'date +%s') }}"
@@ -138,13 +109,3 @@
   template:
     src: "template-overrides.j2"
     dest: "{{ kolla_tmpdir }}/template-overrides.j2"
-
-- name: Set Kolla build profile
-  set_fact:
-    build_profile: >
-      {% if kolla_rdo_images is defined and kolla_rdo_images -%}
-      {% set profile = "tripleo_custom" -%}
-      {% else -%}
-      {% set profile = "tripleo_default" -%}
-      {% endif -%}
-      {{- profile -}}

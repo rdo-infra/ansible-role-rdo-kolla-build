@@ -62,3 +62,4 @@ kolla_push: false
 # For example, 'nova' would build all parent and child containers related to
 # 'nova'.
 kolla_rdo_images:
+build_profile: tripleo_custom
